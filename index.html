@@ -9,30 +9,67 @@
       margin: 0;
       padding: 0;
     }
+    .custom-icon {
+      background-color: white;
+      border-radius: 8px;
+      padding: 5px;
+    }
+    #dropdown {
+      position: absolute;
+      z-index: 1000;
+      top: 10px;
+      right: 10px;
+    }
   </style>
 </head>
 <body>
   <div id="mapid"></div>
+  <select id="dropdown">
+    <option value="europe_man_batch_0.geojson">Man Batch 0</option>
+    <option value="europe_man_batch_1.geojson">Man Batch 1</option>
+    <option value="europe_man_batch_2.geojson">Man Batch 2</option>
+    <option value="europe_man_batch_3.geojson">Man Batch 3</option>
+    <option value="europe_men_batch_1.geojson">Men Batch 1</option>
+    <option value="europe_woman_batch_0.geojson">Woman Batch 0</option>
+    <option value="europe_woman_batch_1.geojson">Woman Batch 1</option>
+    <option value="europe_woman_batch_2.geojson">Woman Batch 2</option>
+    <option value="europe_woman_batch_3.geojson">Woman Batch 3</option>
+  </select>
 
   <script>
     var map = L.map('mapid').setView([54.5260, 15.2551], 4);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    fetch('europe_images.geojson')  // path to your GeoJSON file
-      .then(response => response.json())
-      .then(data => {
-        L.geoJSON(data, {
-          pointToLayer: function (feature, latlng) {
-            var divIcon = L.divIcon({
-              className: 'custom-icon',
-              html: `<div style="text-align: center;"><b>${feature.properties.name}</b><br>
-                  <img src="data:image/png;base64,${feature.properties.image}" style="border-radius: 8px;">
-                  </div>`
-            });
-            return L.marker(latlng, {icon: divIcon});
+    var geojsonLayer = null;
+
+    function loadData(filename) {
+      filename = "geojson_data/"+filename
+      fetch(filename)
+        .then(response => response.json())
+        .then(data => {
+          if (geojsonLayer) {
+            map.removeLayer(geojsonLayer);
           }
-        }).addTo(map);
-      });
+          geojsonLayer = L.geoJSON(data, {
+            pointToLayer: function (feature, latlng) {
+              var divIcon = L.divIcon({
+                className: 'custom-icon',
+                html: `<div style="text-align: center;"><b>${feature.properties.name}</b><br>
+                    <img src="data:image/png;base64,${feature.properties.image}" style="border-radius: 8px;">
+                    </div>`
+              });
+              return L.marker(latlng, {icon: divIcon});
+            }
+          }).addTo(map);
+        });
+    }
+
+    document.getElementById('dropdown').addEventListener('change', function() {
+      loadData(this.value);
+    });
+
+    // Load default data
+    loadData('europe_man_batch_0.geojson');
   </script>
 </body>
 </html>
