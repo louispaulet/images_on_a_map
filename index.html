@@ -3,9 +3,16 @@
 <head>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    body, html, #mapid {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
-  <div id="mapid" style="height: 600px;"></div>
+  <div id="mapid"></div>
 
   <script>
     var map = L.map('mapid').setView([54.5260, 15.2551], 4);
@@ -16,10 +23,13 @@
       .then(data => {
         L.geoJSON(data, {
           pointToLayer: function (feature, latlng) {
-            var popupContent = `<div style="text-align: center;"><b>${feature.properties.name}</b><br>
-                <img src="data:image/png;base64,${feature.properties.image}" style="border-radius: 8px;">
-                </div>`;
-            return L.marker(latlng).bindPopup(popupContent);
+            var divIcon = L.divIcon({
+              className: 'custom-icon',
+              html: `<div style="text-align: center;"><b>${feature.properties.name}</b><br>
+                  <img src="data:image/png;base64,${feature.properties.image}" style="border-radius: 8px;">
+                  </div>`
+            });
+            return L.marker(latlng, {icon: divIcon});
           }
         }).addTo(map);
       });
