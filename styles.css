@@ -3,14 +3,27 @@ body, html, #mapid {
   margin: 0;
   padding: 0;
 }
+
 .custom-icon {
   background-color: white;
   border-radius: 8px;
   padding: 5px;
 }
+
 #dropdown {
   position: absolute;
   z-index: 1000;
-  top: 10px;
+  top: 50px;
   right: 10px;
+  width: 250px; /* Adjust the width value as per your preference */
+}
+
+#category-text {
+  position: absolute;
+  z-index: 1000; /* Increase the z-index value to make it appear above the dropdown */
+  top: 5px; /* Adjust the top position as needed */
+  right: 10px; /* Adjust the right position as needed */
+  background-color: white; /* Add white background color */
+  padding: 5px; /* Add padding for spacing */
+  width: 250px;
 }
