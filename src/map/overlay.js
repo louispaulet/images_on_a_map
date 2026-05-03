@@ -35,18 +35,18 @@ export function normalizeFeatureCollection(collection, sourceId) {
 
 export const FEATURE_CARD_LAYOUT = {
   desktop: {
-    width: 128,
-    height: 168,
-    gap: 14,
-    edge: 12,
-    visibilityBuffer: 96,
-  },
-  tablet: {
-    width: 116,
-    height: 148,
+    width: 114,
+    height: 146,
     gap: 12,
     edge: 10,
     visibilityBuffer: 84,
+  },
+  tablet: {
+    width: 102,
+    height: 134,
+    gap: 10,
+    edge: 8,
+    visibilityBuffer: 72,
   },
   mobile: {
     width: 56,
@@ -86,19 +86,116 @@ function resolveLayout(viewportMode) {
   return FEATURE_CARD_LAYOUT.desktop;
 }
 
+function getCardBounds(anchor, layout) {
+  const left = anchor.x - layout.width / 2;
+  const top = anchor.y - layout.height - layout.gap;
+
+  return {
+    left,
+    top,
+    right: left + layout.width,
+    bottom: top + layout.height,
+  };
+}
+
+function intersects(leftRect, rightRect, padding = 12) {
+  return !(
+    leftRect.right + padding <= rightRect.left ||
+    leftRect.left - padding >= rightRect.right ||
+    leftRect.bottom + padding <= rightRect.top ||
+    leftRect.top - padding >= rightRect.bottom
+  );
+}
+
+function clampAnchorPoint(x, y, layout, insets, safeWidth, safeHeight) {
+  const minX = insets.left + layout.edge + layout.width / 2;
+  const maxX = safeWidth - insets.right - layout.edge - layout.width / 2;
+  const minY = insets.top + layout.edge + layout.height + layout.gap;
+  const maxY = safeHeight - insets.bottom - layout.edge + layout.gap;
+
+  return {
+    x: clamp(x, minX, maxX, safeWidth / 2),
+    y: clamp(y, minY, maxY, safeHeight / 2),
+  };
+}
+
+function resolveAnchorCollisions(anchors, layout, viewport, insets) {
+  const spacingX = Math.max(18, layout.width * 0.58);
+  const spacingY = Math.max(16, layout.height * 0.34);
+  const candidateOffsets = [[0, 0]];
+
+  for (let ring = 1; ring <= 8; ring += 1) {
+    const dx = spacingX * ring;
+    const dy = spacingY * ring;
+
+    candidateOffsets.push(
+      [dx, 0],
+      [-dx, 0],
+      [0, dy],
+      [0, -dy],
+      [dx, dy * 0.7],
+      [-dx, dy * 0.7],
+      [dx, -dy * 0.7],
+      [-dx, -dy * 0.7],
+    );
+  }
+
+  const placed = [];
+
+  return anchors.map((anchor) => {
+    const point = { x: anchor.x, y: anchor.y };
+
+    for (const [dx, dy] of candidateOffsets) {
+      const candidatePoint = clampAnchorPoint(point.x + dx, point.y + dy, layout, insets, viewport.width, viewport.height);
+      const candidate = {
+        ...anchor,
+        x: candidatePoint.x,
+        y: candidatePoint.y,
+      };
+      const candidateBounds = getCardBounds(candidate, layout);
+
+      if (candidateBounds.left < insets.left || candidateBounds.right > viewport.width - insets.right) {
+        continue;
+      }
+
+      if (candidateBounds.top < insets.top || candidateBounds.bottom > viewport.height - insets.bottom) {
+        continue;
+      }
+
+      if (placed.every((existing) => !intersects(candidateBounds, existing.bounds))) {
+        placed.push({
+          bounds: candidateBounds,
+          x: candidate.x,
+          y: candidate.y,
+        });
+
+        return candidate;
+      }
+    }
+
+    const fallbackPoint = clampAnchorPoint(point.x, point.y, layout, insets, viewport.width, viewport.height);
+    const fallback = {
+      ...anchor,
+      x: fallbackPoint.x,
+      y: fallbackPoint.y,
+    };
+    placed.push({
+      bounds: getCardBounds(fallback, layout),
+      x: fallback.x,
+      y: fallback.y,
+    });
+
+    return fallback;
+  });
+}
+
 export function projectAnchors(features, project, viewport, safeInsets = {}, viewportMode = 'desktop') {
   const insets = resolveInsets(safeInsets);
   const layout = resolveLayout(viewportMode);
   const safeWidth = viewport.width;
   const safeHeight = viewport.height;
-  const minX = insets.left + layout.edge + layout.width / 2;
-  const maxX = safeWidth - insets.right - layout.edge - layout.width / 2;
-  const minY = insets.top + layout.edge + layout.height + layout.gap;
-  const maxY = safeHeight - insets.bottom - layout.edge + layout.gap;
-  const fallbackX = safeWidth / 2;
-  const fallbackY = safeHeight / 2;
 
-  return features.map((feature) => {
+  const projected = features.map((feature) => {
     const point = project([feature.lng, feature.lat]);
     const visible =
       point.x >= -layout.visibilityBuffer &&
@@ -108,9 +205,24 @@ export function projectAnchors(features, project, viewport, safeInsets = {}, vie
 
     return {
       ...feature,
-      x: clamp(point.x, minX, maxX, fallbackX),
-      y: clamp(point.y, minY, maxY, fallbackY),
+      x: point.x,
+      y: point.y,
       visible,
     };
   });
+
+  if (viewportMode === 'mobile') {
+    return projected.map((anchor) => {
+      const clamped = clampAnchorPoint(anchor.x, anchor.y, layout, insets, safeWidth, safeHeight);
+
+      return {
+        ...anchor,
+        x: clamped.x,
+        y: clamped.y,
+      };
+    });
+  }
+
+  const sorted = projected.slice().sort((left, right) => left.y - right.y || left.x - right.x);
+  return resolveAnchorCollisions(sorted, layout, viewport, insets);
 }

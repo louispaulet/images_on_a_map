@@ -56,7 +56,7 @@ describe('projectAnchors', () => {
     );
 
     expect(anchors[0]).toMatchObject({
-      x: 76,
+      x: 67,
       y: 234.5,
       visible: true,
     });
@@ -79,8 +79,8 @@ describe('projectAnchors', () => {
     );
 
     expect(anchors[0]).toMatchObject({
-      x: 296,
-      y: 294,
+      x: 287,
+      y: 268,
       visible: true,
     });
   });
@@ -100,13 +100,40 @@ describe('projectAnchors', () => {
     const mobileAnchors = projectAnchors([feature], () => ({ x: 80, y: 180 }), viewport, safeInsets, 'mobile');
 
     expect(desktopAnchors[0]).toMatchObject({
-      x: 92,
-      y: 258,
+      x: 83,
+      y: 232,
     });
 
     expect(mobileAnchors[0]).toMatchObject({
       x: 80,
       y: 180,
     });
+  });
+
+  it('separates overlapping desktop anchors', () => {
+    const anchors = projectAnchors(
+      [
+        {
+          id: 'one',
+          name: 'One',
+          imageSrc: 'data:image/png;base64,abc123',
+          lng: 1,
+          lat: 1,
+        },
+        {
+          id: 'two',
+          name: 'Two',
+          imageSrc: 'data:image/png;base64,abc123',
+          lng: 1,
+          lat: 1,
+        },
+      ],
+      () => ({ x: 220, y: 240 }),
+      { width: 800, height: 600 },
+      undefined,
+      'desktop',
+    );
+
+    expect(anchors[0].x === anchors[1].x && anchors[0].y === anchors[1].y).toBe(false);
   });
 });

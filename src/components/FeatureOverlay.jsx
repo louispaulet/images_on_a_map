@@ -1,5 +1,6 @@
 export default function FeatureOverlay({ anchors, activeFeatureId, onSelectFeature, collectionTitle, batchLabel, layoutMode }) {
   const isMobile = layoutMode === 'mobile';
+  const isDesktop = layoutMode === 'desktop';
   const visibleAnchors = anchors.slice().sort((left, right) => left.y - right.y);
 
   return (
@@ -14,14 +15,14 @@ export default function FeatureOverlay({ anchors, activeFeatureId, onSelectFeatu
             onClick={() => onSelectFeature(anchor.id)}
             className={[
               'pointer-events-auto absolute select-none text-left transition duration-200',
-              isMobile ? 'w-[3.25rem]' : 'w-[8rem] sm:w-[8.25rem]',
+              isMobile ? 'w-[3.25rem]' : isDesktop ? 'w-[7rem]' : 'w-[6.5rem]',
               anchor.visible ? 'opacity-100' : 'opacity-90',
-              isActive ? 'scale-[1.03]' : 'hover:-translate-y-0.5',
+              isActive ? 'scale-[1.06]' : 'hover:-translate-y-0.5',
             ].join(' ')}
             style={{
               left: `${anchor.x}px`,
               top: `${anchor.y}px`,
-              transform: isMobile ? 'translate(-50%, calc(-100% - 0.4rem))' : 'translate(-50%, calc(-100% - 0.875rem))',
+              transform: isMobile ? 'translate(-50%, calc(-100% - 0.4rem))' : 'translate(-50%, calc(-100% - 0.6rem))',
               zIndex: Math.round(anchor.y),
             }}
             aria-label={`Select ${anchor.name}`}
@@ -36,15 +37,22 @@ export default function FeatureOverlay({ anchors, activeFeatureId, onSelectFeatu
                 <img
                   src={anchor.imageSrc}
                   alt={anchor.name}
-                  className={['object-cover', isMobile ? 'h-[2.75rem] w-[2.75rem] rounded-full' : 'h-[6.75rem] w-full'].join(' ')}
+                  className={[
+                    'object-cover',
+                    isMobile ? 'h-[2.75rem] w-[2.75rem] rounded-full' : isDesktop ? 'h-[4.5rem] w-full' : 'h-[4rem] w-full',
+                  ].join(' ')}
                   loading="lazy"
                 />
               </div>
               {!isMobile ? (
-                <div className="space-y-0.5 px-2.5 py-2.5">
-                  <p className="text-[9px] tracking-[0.26em] text-cyan-100/70">📦 {batchLabel}</p>
-                  <p className="text-[0.95rem] font-semibold leading-5 text-white">{anchor.name}</p>
-                  <p className="text-[10px] leading-4 text-slate-300">{collectionTitle}</p>
+                <div className={['space-y-0.5', isDesktop ? 'px-2 py-2' : 'px-2 py-1.5'].join(' ')}>
+                  <p className={['tracking-[0.26em] text-cyan-100/70', isDesktop ? 'text-[8px]' : 'text-[7px]'].join(' ')}>
+                    📦 {batchLabel}
+                  </p>
+                  <p className={['font-semibold leading-4 text-white', isDesktop ? 'text-[0.82rem]' : 'text-[0.78rem]'].join(' ')}>
+                    {anchor.name}
+                  </p>
+                  <p className={['text-[10px] leading-4 text-slate-300', isDesktop ? 'hidden' : 'hidden']}>{collectionTitle}</p>
                 </div>
               ) : null}
               <div
