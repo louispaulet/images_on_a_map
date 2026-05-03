@@ -177,6 +177,11 @@ export default function App() {
           <aside
             ref={railRef}
             className="pointer-events-auto w-full max-w-[20rem] rounded-[24px] border border-white/10 bg-slate-950/72 p-3 shadow-[0_24px_80px_rgba(2,6,23,0.45)] backdrop-blur-2xl sm:max-w-[21rem] lg:max-w-[22rem] lg:p-4"
+            style={{
+              maxHeight: 'calc(100vh - 7.5rem)',
+              overflowY: 'auto',
+              scrollbarGutter: 'stable',
+            }}
           >
             <div className="flex items-center justify-between gap-4">
               <div>

@@ -22,6 +22,12 @@
 - Slimmed the floating image cards and the left rail so the map remains the dominant composition.
 - Reworked the feature details panel into a denser, more editorial summary with emoji labels.
 
+### Visibility fix
+
+- Switched the map overlay measurement to the real MapLibre canvas so anchor positions are computed from the correct viewport size.
+- Added a retry path for the overlay update so the cards appear after layout settles instead of collapsing to the top edge.
+- Confirmed in browser screenshots that both the men and women collections show readable face cards on the map, and that the sidebar scrolls to the lower collections.
+
 ### Tooling and workflow
 
 - Added `agents.md` with the repo rules: always run `make lint` and `make test`, and always commit and push after each change.

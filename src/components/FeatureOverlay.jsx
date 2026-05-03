@@ -1,8 +1,5 @@
 export default function FeatureOverlay({ anchors, activeFeatureId, onSelectFeature, collectionTitle, batchLabel }) {
-  const visibleAnchors = anchors
-    .filter((anchor) => anchor.visible)
-    .slice()
-    .sort((left, right) => left.y - right.y);
+  const visibleAnchors = anchors.slice().sort((left, right) => left.y - right.y);
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10">
@@ -16,6 +13,7 @@ export default function FeatureOverlay({ anchors, activeFeatureId, onSelectFeatu
             onClick={() => onSelectFeature(anchor.id)}
             className={[
               'pointer-events-auto absolute w-[8rem] select-none text-left transition duration-200 sm:w-[8.25rem]',
+              anchor.visible ? 'opacity-100' : 'opacity-90',
               isActive ? 'scale-[1.03]' : 'hover:-translate-y-0.5',
             ].join(' ')}
             style={{

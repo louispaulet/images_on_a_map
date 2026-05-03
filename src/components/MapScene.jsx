@@ -78,22 +78,33 @@ export default function MapScene({
     }
 
     const map = mapRef.current;
+    const container = map.getContainer();
+    let animationFrame = 0;
     const update = () => {
-      const canvas = map.getCanvasContainer();
+      const canvas = map.getCanvas();
       const viewport = {
         width: canvas.clientWidth,
         height: canvas.clientHeight,
       };
 
+      if (viewport.width === 0 || viewport.height === 0) {
+        animationFrame = window.requestAnimationFrame(update);
+        return;
+      }
+
       setAnchors(projectAnchors(features, (lngLat) => map.project(lngLat), viewport, chromeInsets));
     };
 
     update();
+    const resizeObserver = new ResizeObserver(update);
+    resizeObserver.observe(container);
     map.on('move', update);
     map.on('zoom', update);
     map.on('resize', update);
 
     return () => {
+      window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
       map.off('move', update);
       map.off('zoom', update);
       map.off('resize', update);
