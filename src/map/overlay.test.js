@@ -3,11 +3,11 @@ import { getAnchorPresentation, normalizeFeatureCollection, projectAnchors } fro
 import { collections } from '../data/catalog.js';
 
 describe('catalog', () => {
-  it('keeps the original 12 content groups and 28 batch files', () => {
+  it('keeps the original 12 content groups and 30 batch files', () => {
     const batchCount = collections.reduce((total, collection) => total + collection.batches.length, 0);
 
     expect(collections).toHaveLength(12);
-    expect(batchCount).toBe(28);
+    expect(batchCount).toBe(30);
   });
 });
 

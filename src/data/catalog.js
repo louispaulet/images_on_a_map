@@ -22,6 +22,7 @@ export const collections = [
       'europe_man_batch_1.geojson',
       'europe_man_batch_2.geojson',
       'europe_man_batch_3.geojson',
+      'europe_man_batch_4.geojson',
     ],
   }),
   collection({
@@ -34,6 +35,7 @@ export const collections = [
       'europe_woman_batch_1.geojson',
       'europe_woman_batch_2.geojson',
       'europe_woman_batch_3.geojson',
+      'europe_woman_batch_4.geojson',
     ],
   }),
   collection({
@@ -133,4 +135,3 @@ export const getCollectionById = (collectionId) =>
 
 export const getBatchByFile = (collectionEntry, file) =>
   collectionEntry.batches.find((batchEntry) => batchEntry.file === file) ?? collectionEntry.batches[0];
-
