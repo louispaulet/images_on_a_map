@@ -34,11 +34,27 @@ export function normalizeFeatureCollection(collection, sourceId) {
 }
 
 export const FEATURE_CARD_LAYOUT = {
-  width: 128,
-  height: 168,
-  gap: 14,
-  edge: 12,
-  visibilityBuffer: 96,
+  desktop: {
+    width: 128,
+    height: 168,
+    gap: 14,
+    edge: 12,
+    visibilityBuffer: 96,
+  },
+  tablet: {
+    width: 116,
+    height: 148,
+    gap: 12,
+    edge: 10,
+    visibilityBuffer: 84,
+  },
+  mobile: {
+    width: 56,
+    height: 56,
+    gap: 8,
+    edge: 6,
+    visibilityBuffer: 48,
+  },
 };
 
 function clamp(value, min, max, fallback) {
@@ -58,24 +74,37 @@ function resolveInsets(safeInsets = {}) {
   };
 }
 
-export function projectAnchors(features, project, viewport, safeInsets = {}) {
+function resolveLayout(viewportMode) {
+  if (viewportMode === 'mobile') {
+    return FEATURE_CARD_LAYOUT.mobile;
+  }
+
+  if (viewportMode === 'tablet') {
+    return FEATURE_CARD_LAYOUT.tablet;
+  }
+
+  return FEATURE_CARD_LAYOUT.desktop;
+}
+
+export function projectAnchors(features, project, viewport, safeInsets = {}, viewportMode = 'desktop') {
   const insets = resolveInsets(safeInsets);
+  const layout = resolveLayout(viewportMode);
   const safeWidth = viewport.width;
   const safeHeight = viewport.height;
-  const minX = insets.left + FEATURE_CARD_LAYOUT.edge + FEATURE_CARD_LAYOUT.width / 2;
-  const maxX = safeWidth - insets.right - FEATURE_CARD_LAYOUT.edge - FEATURE_CARD_LAYOUT.width / 2;
-  const minY = insets.top + FEATURE_CARD_LAYOUT.edge + FEATURE_CARD_LAYOUT.height + FEATURE_CARD_LAYOUT.gap;
-  const maxY = safeHeight - insets.bottom - FEATURE_CARD_LAYOUT.edge + FEATURE_CARD_LAYOUT.gap;
+  const minX = insets.left + layout.edge + layout.width / 2;
+  const maxX = safeWidth - insets.right - layout.edge - layout.width / 2;
+  const minY = insets.top + layout.edge + layout.height + layout.gap;
+  const maxY = safeHeight - insets.bottom - layout.edge + layout.gap;
   const fallbackX = safeWidth / 2;
   const fallbackY = safeHeight / 2;
 
   return features.map((feature) => {
     const point = project([feature.lng, feature.lat]);
     const visible =
-      point.x >= -FEATURE_CARD_LAYOUT.visibilityBuffer &&
-      point.y >= -FEATURE_CARD_LAYOUT.visibilityBuffer &&
-      point.x <= safeWidth + FEATURE_CARD_LAYOUT.visibilityBuffer &&
-      point.y <= safeHeight + FEATURE_CARD_LAYOUT.visibilityBuffer;
+      point.x >= -layout.visibilityBuffer &&
+      point.y >= -layout.visibilityBuffer &&
+      point.x <= safeWidth + layout.visibilityBuffer &&
+      point.y <= safeHeight + layout.visibilityBuffer;
 
     return {
       ...feature,

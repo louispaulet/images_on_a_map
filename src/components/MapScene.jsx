@@ -11,6 +11,7 @@ export default function MapScene({
   collectionTitle,
   batchLabel,
   chromeInsets,
+  layoutMode,
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -92,7 +93,7 @@ export default function MapScene({
         return;
       }
 
-      setAnchors(projectAnchors(features, (lngLat) => map.project(lngLat), viewport, chromeInsets));
+      setAnchors(projectAnchors(features, (lngLat) => map.project(lngLat), viewport, chromeInsets, layoutMode));
     };
 
     update();
@@ -109,7 +110,7 @@ export default function MapScene({
       map.off('zoom', update);
       map.off('resize', update);
     };
-  }, [chromeInsets, features, mapReady]);
+  }, [chromeInsets, features, layoutMode, mapReady]);
 
   return (
     <div className="absolute inset-0">
@@ -122,6 +123,7 @@ export default function MapScene({
         onSelectFeature={onSelectFeature}
         collectionTitle={collectionTitle}
         batchLabel={batchLabel}
+        layoutMode={layoutMode}
       />
     </div>
   );

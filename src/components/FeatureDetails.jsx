@@ -3,7 +3,9 @@ function formatCoordinate(value, positiveSuffix, negativeSuffix) {
   return `${Math.abs(value).toFixed(2)}°${suffix}`;
 }
 
-export default function FeatureDetails({ collection, batch, feature, totalFeatures }) {
+export default function FeatureDetails({ collection, batch, feature, totalFeatures, layoutMode }) {
+  const isMobile = layoutMode === 'mobile';
+
   if (!feature) {
     return (
       <div className="mt-4 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300">
@@ -13,23 +15,25 @@ export default function FeatureDetails({ collection, batch, feature, totalFeatur
   }
 
   return (
-    <div className="mt-4 rounded-3xl border border-white/10 bg-slate-950/65 p-3 shadow-[0_18px_60px_rgba(2,6,23,0.45)] backdrop-blur-2xl">
+    <div className={['mt-4 rounded-3xl border border-white/10 bg-slate-950/65 shadow-[0_18px_60px_rgba(2,6,23,0.45)] backdrop-blur-2xl', isMobile ? 'p-2.5' : 'p-3'].join(' ')}>
       <div className="flex items-start gap-3">
         <img
           src={feature.imageSrc}
           alt={feature.name}
-          className="h-24 w-[4.5rem] shrink-0 rounded-2xl border border-white/10 object-cover shadow-[0_16px_32px_rgba(2,6,23,0.45)]"
+          className={['shrink-0 rounded-2xl border border-white/10 object-cover shadow-[0_16px_32px_rgba(2,6,23,0.45)]', isMobile ? 'h-20 w-[4rem]' : 'h-24 w-[4.5rem]'].join(' ')}
         />
         <div className="min-w-0 flex-1">
           <p className="text-[10px] tracking-[0.35em] text-slate-400">{collection.theme}</p>
-          <h3 className="mt-2 font-display text-xl text-white">{feature.name}</h3>
+          <h3 className={['mt-2 font-display text-xl text-white', isMobile ? 'text-[1.1rem]' : ''].join(' ')}>
+            {feature.name}
+          </h3>
           <p className="mt-1 text-sm leading-5 text-slate-300">
             {collection.title} · {batch.label}
           </p>
         </div>
       </div>
 
-      <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
+      <dl className={['mt-3 grid gap-2 text-sm', isMobile ? 'grid-cols-1' : 'grid-cols-2'].join(' ')}>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-3">
           <dt className="text-[10px] tracking-[0.3em] text-slate-400">🗂️ Collection</dt>
           <dd className="mt-2 text-slate-100">{collection.title}</dd>

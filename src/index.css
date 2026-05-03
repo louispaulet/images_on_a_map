@@ -16,6 +16,8 @@ body,
 
 body {
   margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
   background:
     radial-gradient(circle at top left, rgba(96, 165, 250, 0.14), transparent 24%),
     radial-gradient(circle at bottom right, rgba(244, 114, 182, 0.1), transparent 22%),
@@ -36,4 +38,3 @@ a {
   background: rgba(125, 211, 252, 0.28);
   color: #f8fafc;
 }
-

@@ -84,4 +84,29 @@ describe('projectAnchors', () => {
       visible: true,
     });
   });
+
+  it('uses a tighter anchor layout on mobile screens', () => {
+    const viewport = { width: 390, height: 844 };
+    const safeInsets = { top: 64, right: 16, bottom: 96, left: 16 };
+    const feature = {
+      id: 'france',
+      name: 'France',
+      imageSrc: 'data:image/png;base64,abc123',
+      lng: 2.1,
+      lat: 46.9,
+    };
+
+    const desktopAnchors = projectAnchors([feature], () => ({ x: 80, y: 180 }), viewport, safeInsets, 'desktop');
+    const mobileAnchors = projectAnchors([feature], () => ({ x: 80, y: 180 }), viewport, safeInsets, 'mobile');
+
+    expect(desktopAnchors[0]).toMatchObject({
+      x: 92,
+      y: 258,
+    });
+
+    expect(mobileAnchors[0]).toMatchObject({
+      x: 80,
+      y: 180,
+    });
+  });
 });
