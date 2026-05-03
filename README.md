@@ -7,11 +7,11 @@ Images on a Map is now a modern V2 rebuild of the original static Leaflet experi
 - Full-bleed Europe map built with MapLibre
 - Anchored image cards projected from GeoJSON point features
 - Collection rail for the 12 current content groups
-- Batch chips for the 28 GeoJSON files in `geojson_data/`
+- Batch chips for the GeoJSON files in `geojson_data/`
 - Detail panel for the selected place, batch, and coordinates
 - Live GitHub Pages deployment at [facemap.thefrenchartist.dev](https://facemap.thefrenchartist.dev/)
 
-The GeoJSON batches are copied into `public/geojson_data/` during `make up` and `make build`, so the app can load the current assets without manual syncing.
+The GeoJSON batches are copied into `public/geojson_data/` during `make up` and `make build`, and the extracted WebP image assets are copied into `public/geojson_images/` at the same time, so the app can load the current assets without manual syncing.
 
 ## Legacy v1.0
 
@@ -30,7 +30,9 @@ Each GeoJSON feature in the current archive follows the same basic pattern:
 - `geometry.type = "Point"`
 - `geometry.coordinates = [lng, lat]`
 - `properties.name`
-- `properties.image` as a base64 PNG payload
+- `properties.image` as either a legacy base64 PNG payload or a `/geojson_images/...` WebP path
+
+The migration script `npm run migrate:geojson-images` rewrites inline PNG payloads into WebP files stored under `geojson_images/<batch-stem>/...` and updates the GeoJSON to reference those static assets.
 
 The notebooks in `notebooks/` remain the source of the current asset set.
 

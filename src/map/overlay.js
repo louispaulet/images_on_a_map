@@ -3,7 +3,23 @@ export function toImageSrc(image) {
     return '';
   }
 
-  return image.startsWith('data:') ? image : `data:image/png;base64,${image}`;
+  if (typeof image !== 'string') {
+    return '';
+  }
+
+  const trimmed = image.trim();
+
+  if (
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('./') ||
+    trimmed.startsWith('../') ||
+    /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(trimmed)
+  ) {
+    return trimmed;
+  }
+
+  return `data:image/png;base64,${trimmed}`;
 }
 
 export function normalizeFeatureCollection(collection, sourceId) {

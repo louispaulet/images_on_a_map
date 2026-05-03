@@ -3,6 +3,6 @@ dist/
 coverage/
 .cache/
 public/geojson_data/
+public/geojson_images/
 .DS_Store
 *.log
-

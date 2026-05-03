@@ -37,6 +37,24 @@ describe('normalizeFeatureCollection', () => {
       }),
     ]);
   });
+
+  it('preserves external image urls', () => {
+    const features = normalizeFeatureCollection(
+      {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [2.0992, 46.895] },
+            properties: { name: 'France', image: '/geojson_images/sample-batch/001-france.webp' },
+          },
+        ],
+      },
+      'sample-batch.geojson',
+    );
+
+    expect(features[0].imageSrc).toBe('/geojson_images/sample-batch/001-france.webp');
+  });
 });
 
 describe('projectAnchors', () => {
