@@ -1,36 +1,61 @@
-# Images on a Map 🌍 📷
+# Images on a Map
 
-Welcome to Images on a Map! This project uses [Leaflet](https://leafletjs.com/) to display an interactive map of Europe, with images representing each country. The images are loaded from geojson files that are selected via a dropdown menu. 
+This repository started as a small static Leaflet demo that puts representative images on a map. The original experience is now frozen as `v1.0`, and the repo is being rebuilt around a modern Vite + React + Tailwind + MapLibre stack.
 
-## Features ✨
+## What `v1.0` did
 
-- Interactive map of Europe 🏰
-- Each country is represented by a unique image 🖼
-- Easily switch between different geojson files using a dropdown menu ⬇️
-- Images are fully displayed without any interaction required 👀
+The legacy app:
 
-## How it works ⚙️
+- Rendered an interactive Europe map with [Leaflet](https://leafletjs.com/)
+- Loaded one GeoJSON batch at a time from the `geojson_data/` directory
+- Drew each country as a point with a country name and a base64-encoded PNG image
+- Used a dropdown to switch between content families and batches
+- Could be opened directly by loading `index.html` in a browser
 
-1. Geojson files are stored in the `geojson_data` folder. Each geojson file contains information about the countries in Europe and a corresponding image in base64 format. 
-2. The Leaflet library is used to display the map and images.
-3. A dropdown menu allows you to select a geojson file. When you select a file, the map updates to display the images from the selected file. 
+That version is preserved by the `v1.0` git tag.
 
-## Generate your own geojson files 🔧
+## Data model
 
-In the `notebooks` directory, you'll find a Jupyter notebook that shows you how to create your own geojson files. Feel free to create your own datasets and share them here! 
+Each GeoJSON feature contains:
 
-## Run the project 🏃
+- `geometry.type = "Point"`
+- `geometry.coordinates = [lng, lat]`
+- `properties.name`
+- `properties.image` as a base64 PNG payload
 
-Just clone this repository and open `index.html` in your favorite browser! 
+The current data sets cover:
 
-```
-git clone https://github.com/louispaulet/images_on_a_map.git
-```
+- Faces of Europe
+- Architecture and typical houses
+- Baroque still life prompts
+- Impressionist garden prompts
+- National leaders
+- Mosaic
+- Mountain
+- Renaissance castle
+- Travel poster
+- Vintage poster
 
-## Contribute 🤝
+## Live deployment
 
-Want to contribute? Great! Just fork this repository, make your changes, and open a pull request. All contributions are greatly appreciated!
+The project is currently deployed on GitHub Pages at:
 
-## License 📃
+- [https://facemap.thefrenchartist.dev/](https://facemap.thefrenchartist.dev/)
 
-This project is licensed under the MIT License - see the `LICENSE` file for more details.
+The custom domain is configured through the root `CNAME` file.
+
+## Generating new data
+
+The `notebooks/` directory contains the original notebooks used to create the GeoJSON batches. Those notebooks are still the source of the current assets.
+
+## v2 direction
+
+The next version will keep the current GeoJSON assets, but present them in a more editorial layout:
+
+- Vite for the app shell
+- React for state and composition
+- Tailwind for the design system
+- MapLibre for the map layer
+- A dedicated overlay module for image cards anchored to the map
+
+The goal is a large, classy map where the imagery feels integrated into the cartography rather than floating above it.
