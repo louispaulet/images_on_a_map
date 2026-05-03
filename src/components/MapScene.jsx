@@ -4,7 +4,14 @@ import { editorialStyle } from '../map/style.js';
 import { projectAnchors } from '../map/overlay.js';
 import FeatureOverlay from './FeatureOverlay.jsx';
 
-export default function MapScene({ features, activeFeatureId, onSelectFeature, collectionTitle, batchLabel }) {
+export default function MapScene({
+  features,
+  activeFeatureId,
+  onSelectFeature,
+  collectionTitle,
+  batchLabel,
+  chromeInsets,
+}) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const [anchors, setAnchors] = useState([]);
@@ -54,11 +61,16 @@ export default function MapScene({ features, activeFeatureId, onSelectFeature, c
     }
 
     map.fitBounds(bounds, {
-      padding: { top: 120, right: 120, bottom: 120, left: 120 },
+      padding: {
+        top: (chromeInsets?.top ?? 0) + 24,
+        right: (chromeInsets?.right ?? 0) + 24,
+        bottom: (chromeInsets?.bottom ?? 0) + 24,
+        left: (chromeInsets?.left ?? 0) + 24,
+      },
       duration: 1200,
       maxZoom: 4.6,
     });
-  }, [features, mapReady]);
+  }, [chromeInsets?.bottom, chromeInsets?.left, chromeInsets?.right, chromeInsets?.top, features, mapReady]);
 
   useEffect(() => {
     if (!mapReady || !mapRef.current) {
@@ -73,7 +85,7 @@ export default function MapScene({ features, activeFeatureId, onSelectFeature, c
         height: canvas.clientHeight,
       };
 
-      setAnchors(projectAnchors(features, (lngLat) => map.project(lngLat), viewport));
+      setAnchors(projectAnchors(features, (lngLat) => map.project(lngLat), viewport, chromeInsets));
     };
 
     update();
@@ -86,7 +98,7 @@ export default function MapScene({ features, activeFeatureId, onSelectFeature, c
       map.off('zoom', update);
       map.off('resize', update);
     };
-  }, [features, mapReady]);
+  }, [chromeInsets, features, mapReady]);
 
   return (
     <div className="absolute inset-0">
@@ -103,4 +115,3 @@ export default function MapScene({ features, activeFeatureId, onSelectFeature, c
     </div>
   );
 }
-

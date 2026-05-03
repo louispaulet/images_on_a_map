@@ -2,8 +2,8 @@ export default function BatchRail({ batches, activeBatchFile, onSelectBatch }) {
   return (
     <div className="mt-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[10px] uppercase tracking-[0.35em] text-slate-400">Batches</p>
-        <p className="text-xs text-slate-400">{batches.length} available</p>
+        <p className="text-[10px] tracking-[0.35em] text-slate-400">📦 Batches</p>
+        <p className="text-xs text-slate-400">{batches.length} total</p>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {batches.map((batch) => {
@@ -29,4 +29,3 @@ export default function BatchRail({ batches, activeBatchFile, onSelectBatch }) {
     </div>
   );
 }
-

@@ -56,10 +56,32 @@ describe('projectAnchors', () => {
     );
 
     expect(anchors[0]).toMatchObject({
-      x: 21,
+      x: 76,
       y: 234.5,
       visible: true,
     });
   });
-});
 
+  it('clamps anchors inside the reserved chrome area', () => {
+    const anchors = projectAnchors(
+      [
+        {
+          id: 'france',
+          name: 'France',
+          imageSrc: 'data:image/png;base64,abc123',
+          lng: 2.1,
+          lat: 46.9,
+        },
+      ],
+      () => ({ x: 12, y: 18 }),
+      { width: 800, height: 600 },
+      { top: 100, right: 24, bottom: 24, left: 220 },
+    );
+
+    expect(anchors[0]).toMatchObject({
+      x: 296,
+      y: 294,
+      visible: true,
+    });
+  });
+});

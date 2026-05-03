@@ -15,6 +15,13 @@
 - Added collection and batch controls for the 12 current content groups and 28 GeoJSON files.
 - Added a detail panel for the active feature and the selected batch metadata.
 
+### Map-first UI cleanup
+
+- Removed the long hero copy and replaced it with compact emoji-led stat chips.
+- Reserved real header and sidebar space when fitting the map, so anchored faces stay inside the visible viewport.
+- Slimmed the floating image cards and the left rail so the map remains the dominant composition.
+- Reworked the feature details panel into a denser, more editorial summary with emoji labels.
+
 ### Tooling and workflow
 
 - Added `agents.md` with the repo rules: always run `make lint` and `make test`, and always commit and push after each change.
