@@ -4,6 +4,33 @@ import { editorialStyle } from '../map/style.js';
 import { projectCountryFeatures } from '../map/countryOverlay.js';
 import CountryImageOverlay from './CountryImageOverlay.jsx';
 
+function extendBoundsWithGeometry(bounds, geometry) {
+  if (!geometry?.coordinates) {
+    return bounds;
+  }
+
+  const visit = (coordinates) => {
+    if (
+      Array.isArray(coordinates) &&
+      coordinates.length >= 2 &&
+      typeof coordinates[0] === 'number' &&
+      typeof coordinates[1] === 'number'
+    ) {
+      bounds.extend(coordinates);
+      return;
+    }
+
+    if (Array.isArray(coordinates)) {
+      for (const child of coordinates) {
+        visit(child);
+      }
+    }
+  };
+
+  visit(geometry.coordinates);
+  return bounds;
+}
+
 export default function CountryMapScene({ countries }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
@@ -21,8 +48,8 @@ export default function CountryMapScene({ countries }) {
       style: editorialStyle,
       center: [8, 18],
       zoom: 1.35,
-      minZoom: 1.1,
-      maxZoom: 5.75,
+      minZoom: 2.65,
+      maxZoom: 6,
       attributionControl: true,
     });
 
@@ -44,6 +71,16 @@ export default function CountryMapScene({ countries }) {
     }
 
     const map = mapRef.current;
+    const bounds = new maplibregl.LngLatBounds();
+
+    for (const country of countries) {
+      extendBoundsWithGeometry(bounds, country.geometry);
+    }
+
+    if (bounds.isEmpty()) {
+      return undefined;
+    }
+
     let animationFrame = 0;
 
     const update = () => {
@@ -63,6 +100,17 @@ export default function CountryMapScene({ countries }) {
       );
       setProjectedCountries(projectCountryFeatures(countries, (lngLat) => map.project(lngLat), nextViewport));
     };
+
+    map.fitBounds(bounds, {
+      padding: {
+        top: 56,
+        right: 56,
+        bottom: 56,
+        left: 56,
+      },
+      duration: 1200,
+      maxZoom: 4.8,
+    });
 
     update();
 

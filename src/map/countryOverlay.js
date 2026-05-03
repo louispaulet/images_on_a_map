@@ -1,5 +1,9 @@
 import { getCountryImage } from '../data/countryImageMap.js';
 
+const COUNTRY_OVERRIDES = {
+  France: 'FR',
+};
+
 function assertFeatureCollection(collection, sourceId) {
   if (!collection || collection.type !== 'FeatureCollection' || !Array.isArray(collection.features)) {
     throw new Error(`Invalid GeoJSON feature collection in ${sourceId}`);
@@ -44,27 +48,39 @@ export function geometryToPath(geometry, project) {
   return '';
 }
 
-export function normalizeWorldCountries(collection, sourceId = 'world-countries.geojson') {
+export function normalizeWorldCountries(
+  collection,
+  sourceId = 'world-countries.geojson',
+  options = {},
+) {
   assertFeatureCollection(collection, sourceId);
 
   return collection.features
     .map((feature, index) => {
       const properties = feature?.properties ?? {};
       const name = String(properties.name ?? '').trim();
-      const countryOverrides = {
-        France: 'FR',
-      };
-      const iso2 = String(countryOverrides[name] ?? properties['ISO3166-1-Alpha-2'] ?? '').trim().toUpperCase();
+      const iso2 = String(COUNTRY_OVERRIDES[name] ?? properties['ISO3166-1-Alpha-2'] ?? '')
+        .trim()
+        .toUpperCase();
 
       if (iso2.length !== 2 || iso2 === '-99') {
         return null;
       }
 
+      const image = getCountryImage(iso2);
+
+      if (!image) {
+        return null;
+      }
+
+      const geometry = iso2 === 'FR' && options.franceGeometry ? options.franceGeometry : feature.geometry;
+
       return {
         id: `${iso2}-${index}`,
         iso2,
         name: name || iso2,
-        geometry: feature.geometry,
+        imageSrc: image.imageSrc,
+        geometry,
         raw: feature,
       };
     })
@@ -77,11 +93,8 @@ export function projectCountryFeatures(countries, project, viewport) {
   }
 
   return countries.map((country) => {
-    const image = getCountryImage(country.iso2);
     return {
       ...country,
-      imageSrc: image?.imageSrc ?? '',
-      hasImage: Boolean(image),
       path: geometryToPath(country.geometry, project),
     };
   });

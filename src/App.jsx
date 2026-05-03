@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import CountryMapScene from './components/CountryMapScene.jsx';
-import { countryImageByIso2 } from './data/countryImageMap.js';
 import { loadWorldCountries } from './data/loadWorldCountries.js';
 
-function HeaderChrome({ mappedCount, totalCountries, fallbackCount }) {
+function HeaderChrome({ countryCount }) {
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div className="max-w-[18rem]">
@@ -19,16 +18,8 @@ function HeaderChrome({ mappedCount, totalCountries, fallbackCount }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 text-[10px] text-slate-200">
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-center">
-          🌍 {totalCountries}
-        </div>
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-center">
-          🖼️ {mappedCount}
-        </div>
-        <div className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-center">
-          ◻️ {fallbackCount}
-        </div>
+      <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] tracking-[0.28em] text-slate-200">
+        {countryCount} countries
       </div>
     </div>
   );
@@ -54,38 +45,30 @@ function CountryRail({ countries }) {
   );
 }
 
-function InfoChrome({
-  countries,
-  mappedCountries,
-  fallbackCount,
-  worldLoadingState,
-}) {
+function InfoChrome({ countries, worldLoadingState }) {
   const readyMessage =
     worldLoadingState.status === 'error'
       ? worldLoadingState.error?.message ?? 'Unable to load the world country boundary source.'
       : worldLoadingState.status === 'loading'
         ? 'Loading the world country boundary source...'
-        : 'World country boundaries are rendered from a GeoJSON source and keyed by ISO2.';
+        : 'Only countries with a matching ISO2 image are rendered.';
 
   return (
-      <div className="space-y-4">
+    <div className="space-y-4">
       <p className="text-[10px] tracking-[0.35em] text-slate-400">🗂️ Country images</p>
       <h2 className="font-display text-xl text-white">ISO2 keyed mapping</h2>
       <p className="text-sm leading-6 text-slate-300">{readyMessage}</p>
       <div className="rounded-3xl border border-white/10 bg-white/5 p-4">
-        <div className="grid grid-cols-3 gap-2 text-[10px] text-slate-200">
+        <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-200">
           <div className="rounded-full border border-white/10 bg-slate-950/40 px-3 py-2 text-center">
             {countries.length} countries
           </div>
           <div className="rounded-full border border-white/10 bg-slate-950/40 px-3 py-2 text-center">
-            {mappedCountries.length} mapped
-          </div>
-          <div className="rounded-full border border-white/10 bg-slate-950/40 px-3 py-2 text-center">
-            {fallbackCount} fallback
+            1 image per country
           </div>
         </div>
       </div>
-      <CountryRail countries={mappedCountries} />
+      <CountryRail countries={countries} />
     </div>
   );
 }
@@ -131,11 +114,7 @@ export default function App() {
     };
   }, []);
 
-  const mappedCountries = useMemo(
-    () => worldLoadingState.countries.filter((country) => countryImageByIso2[country.iso2]),
-    [worldLoadingState.countries],
-  );
-  const fallbackCount = Math.max(0, worldLoadingState.countries.length - mappedCountries.length);
+  const countries = worldLoadingState.countries;
 
   return (
     <main className="relative min-h-screen overflow-hidden text-slate-50">
@@ -145,20 +124,11 @@ export default function App() {
       <div className="pointer-events-none absolute inset-0 z-20">
         <div className="flex h-full flex-col justify-between gap-3 p-3 lg:p-4">
           <header className="pointer-events-auto max-w-[36rem] rounded-[24px] border border-white/10 bg-slate-950/62 p-4 shadow-glass backdrop-blur-2xl lg:p-5">
-            <HeaderChrome
-              mappedCount={mappedCountries.length}
-              totalCountries={worldLoadingState.countries.length}
-              fallbackCount={fallbackCount}
-            />
+            <HeaderChrome countryCount={worldLoadingState.countries.length} />
           </header>
 
           <aside className="pointer-events-auto max-h-[40vh] max-w-[22rem] overflow-y-auto rounded-[24px] border border-white/10 bg-slate-950/72 p-3 shadow-[0_24px_80px_rgba(2,6,23,0.45)] backdrop-blur-2xl lg:max-w-[24rem] lg:p-4">
-            <InfoChrome
-              countries={worldLoadingState.countries}
-              mappedCountries={mappedCountries}
-              fallbackCount={fallbackCount}
-              worldLoadingState={worldLoadingState}
-            />
+            <InfoChrome countries={countries} worldLoadingState={worldLoadingState} />
           </aside>
         </div>
       </div>

@@ -3,8 +3,6 @@ export default function CountryImageOverlay({ countries, viewport }) {
     return null;
   }
 
-  const patternedCountries = countries.filter((country) => country.hasImage && country.path);
-
   return (
     <svg
       className="pointer-events-none absolute inset-0 z-10"
@@ -13,7 +11,7 @@ export default function CountryImageOverlay({ countries, viewport }) {
       aria-hidden="true"
     >
       <defs>
-        {patternedCountries.map((country) => (
+        {countries.map((country) => (
           <pattern
             key={country.iso2}
             id={`country-pattern-${country.iso2}`}
@@ -28,7 +26,7 @@ export default function CountryImageOverlay({ countries, viewport }) {
               y="0"
               width="1"
               height="1"
-              preserveAspectRatio="none"
+              preserveAspectRatio="xMidYMid slice"
             />
           </pattern>
         ))}
@@ -38,13 +36,11 @@ export default function CountryImageOverlay({ countries, viewport }) {
         <path
           key={country.id}
           d={country.path}
-          fill={
-            country.hasImage ? `url(#country-pattern-${country.iso2})` : 'rgba(148, 163, 184, 0.14)'
-          }
-          stroke={country.hasImage ? 'rgba(255, 255, 255, 0.28)' : 'rgba(255, 255, 255, 0.14)'}
-          strokeWidth={country.hasImage ? 1.2 : 0.9}
+          fill={`url(#country-pattern-${country.iso2})`}
+          stroke="rgba(255, 255, 255, 0.28)"
+          strokeWidth={1.15}
           vectorEffect="non-scaling-stroke"
-          opacity={country.hasImage ? 1 : 0.95}
+          opacity={1}
         />
       ))}
     </svg>

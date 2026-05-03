@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { geometryToPath, normalizeWorldCountries, projectCountryFeatures } from './countryOverlay.js';
-import { countryImageByIso2 } from '../data/countryImageMap.js';
 
 describe('normalizeWorldCountries', () => {
   it('keeps ISO2 country records and skips invalid markers', () => {
@@ -58,6 +57,7 @@ describe('projectCountryFeatures', () => {
           id: 'FR-0',
           iso2: 'FR',
           name: 'France',
+          imageSrc: '/country-images/FR.png',
           geometry: { type: 'Polygon', coordinates: [] },
         },
       ],
@@ -67,8 +67,7 @@ describe('projectCountryFeatures', () => {
 
     expect(countries[0]).toMatchObject({
       iso2: 'FR',
-      hasImage: true,
-      imageSrc: countryImageByIso2.FR.imageSrc,
+      imageSrc: '/country-images/FR.png',
       path: '',
     });
   });
