@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { geometryToPath, normalizeWorldCountries, projectCountryFeatures } from './countryOverlay.js';
+import {
+  geometryToMetrics,
+  geometryToPath,
+  normalizeWorldCountries,
+  projectCountryFeatures,
+  selectCountriesForBatch,
+} from './countryOverlay.js';
 
 describe('normalizeWorldCountries', () => {
-  it('keeps ISO2 country records and skips invalid markers', () => {
+  it('keeps ISO2 country records and preserves valid geometries', () => {
     const countries = normalizeWorldCountries({
       type: 'FeatureCollection',
       features: [
@@ -49,8 +55,36 @@ describe('geometryToPath', () => {
   });
 });
 
+describe('geometryToMetrics', () => {
+  it('computes a compactness-aware frame scale', () => {
+    const metrics = geometryToMetrics(
+      {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [0, 0],
+            [2, 0],
+            [2, 1],
+            [0, 1],
+            [0, 0],
+          ],
+        ],
+      },
+      ([lng, lat]) => ({ x: lng * 10, y: lat * 10 }),
+    );
+
+    expect(metrics.bounds).toMatchObject({
+      minX: 0,
+      minY: 0,
+      maxX: 20,
+      maxY: 10,
+    });
+    expect(metrics.area).toBe(200);
+  });
+});
+
 describe('projectCountryFeatures', () => {
-  it('attaches country image metadata when an ISO2 mapping exists', () => {
+  it('attaches projected metrics for country fills', () => {
     const countries = projectCountryFeatures(
       [
         {
@@ -69,6 +103,29 @@ describe('projectCountryFeatures', () => {
       iso2: 'FR',
       imageSrc: '/country-images/FR.png',
       path: '',
+      frameScale: 0.82,
+    });
+  });
+});
+
+describe('selectCountriesForBatch', () => {
+  it('keeps only countries with a matching batch feature', () => {
+    const countries = selectCountriesForBatch(
+      [
+        { iso2: 'FR', name: 'France', geometry: { type: 'Polygon', coordinates: [] } },
+        { iso2: 'ES', name: 'Spain', geometry: { type: 'Polygon', coordinates: [] } },
+      ],
+      [
+        { name: 'France', imageSrc: '/country-images/FR.png' },
+        { name: 'Italy', imageSrc: '/country-images/IT.png' },
+      ],
+    );
+
+    expect(countries).toHaveLength(1);
+    expect(countries[0]).toMatchObject({
+      iso2: 'FR',
+      name: 'France',
+      imageSrc: '/country-images/FR.png',
     });
   });
 });

@@ -46,10 +46,10 @@ export default function CountryMapScene({ countries }) {
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: editorialStyle,
-      center: [8, 18],
-      zoom: 1.35,
-      minZoom: 2.65,
-      maxZoom: 6,
+      center: [10, 48],
+      zoom: 2.05,
+      minZoom: 1.8,
+      maxZoom: 6.2,
       attributionControl: true,
     });
 
@@ -66,7 +66,12 @@ export default function CountryMapScene({ countries }) {
   }, []);
 
   useEffect(() => {
-    if (!mapReady || !mapRef.current || countries.length === 0) {
+    if (!mapReady || !mapRef.current) {
+      return undefined;
+    }
+
+    if (countries.length === 0) {
+      setProjectedCountries([]);
       return undefined;
     }
 
@@ -109,7 +114,7 @@ export default function CountryMapScene({ countries }) {
         left: 56,
       },
       duration: 1200,
-      maxZoom: 4.8,
+      maxZoom: 5.1,
     });
 
     update();
@@ -136,7 +141,7 @@ export default function CountryMapScene({ countries }) {
       <CountryImageOverlay countries={projectedCountries} viewport={viewport} />
       {!mapReady ? (
         <div className="absolute left-4 top-4 z-20 rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-[10px] tracking-[0.3em] text-slate-200 backdrop-blur-xl">
-          Loading world boundaries...
+          Loading
         </div>
       ) : null}
     </div>

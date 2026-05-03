@@ -12,36 +12,52 @@ export default function CountryImageOverlay({ countries, viewport }) {
     >
       <defs>
         {countries.map((country) => (
-          <pattern
-            key={country.iso2}
-            id={`country-pattern-${country.iso2}`}
-            patternUnits="objectBoundingBox"
-            patternContentUnits="objectBoundingBox"
-            width="1"
-            height="1"
-          >
-            <image
-              href={country.imageSrc}
-              x="0"
-              y="0"
+          <clipPath key={`clip-${country.id}`} id={`country-clip-${country.id}`}>
+            <path d={country.path} />
+          </clipPath>
+        ))}
+        {countries.map((country) => {
+          const frameScale = country.frameScale ?? 0.88;
+          const inset = (1 - frameScale) / 2;
+
+          return (
+            <pattern
+              key={`pattern-${country.id}`}
+              id={`country-pattern-${country.id}`}
+              patternUnits="objectBoundingBox"
+              patternContentUnits="objectBoundingBox"
               width="1"
               height="1"
-              preserveAspectRatio="xMidYMid slice"
-            />
-          </pattern>
-        ))}
+            >
+              <image
+                href={country.imageSrc}
+                x={inset}
+                y={inset}
+                width={frameScale}
+                height={frameScale}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </pattern>
+          );
+        })}
       </defs>
 
       {countries.map((country) => (
-        <path
-          key={country.id}
-          d={country.path}
-          fill={`url(#country-pattern-${country.iso2})`}
-          stroke="rgba(255, 255, 255, 0.28)"
-          strokeWidth={1.15}
-          vectorEffect="non-scaling-stroke"
-          opacity={1}
-        />
+        <g key={country.id}>
+          <path
+            d={country.path}
+            fill="rgba(15, 23, 42, 0.52)"
+            stroke="rgba(255, 255, 255, 0.18)"
+            strokeWidth={1.1}
+            vectorEffect="non-scaling-stroke"
+          />
+          <path
+            d={country.path}
+            fill={`url(#country-pattern-${country.id})`}
+            clipPath={`url(#country-clip-${country.id})`}
+            opacity={1}
+          />
+        </g>
       ))}
     </svg>
   );
