@@ -13,7 +13,9 @@ export const editorialStyle = {
       id: 'voyager',
       type: 'raster',
       source: 'voyager',
+      paint: {
+        'raster-opacity': 0.22,
+      },
     },
   ],
 };
-

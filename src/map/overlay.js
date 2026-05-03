@@ -17,6 +17,15 @@ export function normalizeFeatureCollection(collection, sourceId) {
       const coordinates = feature.geometry.coordinates ?? [];
       const [lng, lat] = coordinates;
       const properties = feature.properties ?? {};
+      const iso2 = String(
+        properties.iso2 ??
+          properties.ISO2 ??
+          properties['ISO3166-1-Alpha-2'] ??
+          properties.countryCode ??
+          '',
+      )
+        .trim()
+        .toUpperCase();
 
       if (typeof lng !== 'number' || typeof lat !== 'number') {
         throw new Error(`Invalid coordinates in ${sourceId} at feature ${index}`);
@@ -25,6 +34,7 @@ export function normalizeFeatureCollection(collection, sourceId) {
       return {
         id: `${sourceId}-${index}-${properties.name ?? 'feature'}`,
         name: properties.name ?? 'Unnamed place',
+        iso2,
         imageSrc: toImageSrc(properties.image ?? ''),
         lng,
         lat,
