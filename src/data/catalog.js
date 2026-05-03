@@ -114,6 +114,7 @@ export const collections = [
     files: [
       'eu_national_travel_poster_prompts_batch_0.geojson',
       'eu_national_travel_poster_prompts_batch_1.geojson',
+      'eu_national_travel_poster_prompts_batch_2.geojson',
     ],
   }),
   collection({
