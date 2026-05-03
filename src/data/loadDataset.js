@@ -9,7 +9,6 @@ export async function loadDataset(fileName, signal) {
 
   const response = await fetch(`/geojson_data/${fileName}`, {
     signal,
-    cache: 'no-cache',
   });
 
   if (!response.ok) {
@@ -27,4 +26,3 @@ export async function loadDataset(fileName, signal) {
 export function clearDatasetCache() {
   cache.clear();
 }
-

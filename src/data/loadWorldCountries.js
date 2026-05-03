@@ -4,11 +4,9 @@ export async function loadWorldCountries(signal) {
   const [worldResponse, franceResponse] = await Promise.all([
     fetch('/world-countries.geojson', {
       signal,
-      cache: 'no-cache',
     }),
     fetch('/france-metropole.geojson', {
       signal,
-      cache: 'no-cache',
     }),
   ]);
 
