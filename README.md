@@ -1,61 +1,57 @@
 # Images on a Map
 
-This repository started as a small static Leaflet demo that puts representative images on a map. The original experience is now frozen as `v1.0`, and the repo is being rebuilt around a modern Vite + React + Tailwind + MapLibre stack.
+Images on a Map is now a modern V2 rebuild of the original static Leaflet experiment. The current app uses Vite, React, Tailwind, and MapLibre to place representative images directly on a large editorial map instead of showing them as plain markers.
 
-## What `v1.0` did
+## Current Capabilities
 
-The legacy app:
+- Full-bleed Europe map built with MapLibre
+- Anchored image cards projected from GeoJSON point features
+- Collection rail for the 12 current content groups
+- Batch chips for the 28 GeoJSON files in `geojson_data/`
+- Detail panel for the selected place, batch, and coordinates
+- Live GitHub Pages deployment at [facemap.thefrenchartist.dev](https://facemap.thefrenchartist.dev/)
 
-- Rendered an interactive Europe map with [Leaflet](https://leafletjs.com/)
-- Loaded one GeoJSON batch at a time from the `geojson_data/` directory
-- Drew each country as a point with a country name and a base64-encoded PNG image
-- Used a dropdown to switch between content families and batches
+The GeoJSON batches are copied into `public/geojson_data/` during `make up` and `make build`, so the app can load the current assets without manual syncing.
+
+## Legacy v1.0
+
+The original release is preserved by the `v1.0` git tag. That version:
+
+- Used a static Leaflet map
+- Loaded one GeoJSON batch at a time from the dropdown
+- Rendered point features with `properties.name` and a base64 PNG in `properties.image`
 - Could be opened directly by loading `index.html` in a browser
+- Was the version deployed to the custom domain before this rebuild
 
-That version is preserved by the `v1.0` git tag.
+## Data Format
 
-## Data model
-
-Each GeoJSON feature contains:
+Each GeoJSON feature in the current archive follows the same basic pattern:
 
 - `geometry.type = "Point"`
 - `geometry.coordinates = [lng, lat]`
 - `properties.name`
 - `properties.image` as a base64 PNG payload
 
-The current data sets cover:
+The notebooks in `notebooks/` remain the source of the current asset set.
 
-- Faces of Europe
-- Architecture and typical houses
-- Baroque still life prompts
-- Impressionist garden prompts
-- National leaders
-- Mosaic
-- Mountain
-- Renaissance castle
-- Travel poster
-- Vintage poster
+## Local Development
 
-## Live deployment
+```bash
+npm install
+make up
+```
 
-The project is currently deployed on GitHub Pages at:
+Then open the local URL printed by `make up`.
 
-- [https://facemap.thefrenchartist.dev/](https://facemap.thefrenchartist.dev/)
+Other useful targets:
 
-The custom domain is configured through the root `CNAME` file.
+- `make down` stops the local dev server
+- `make lint` runs ESLint
+- `make test` runs the Vitest smoke tests
+- `make build` creates the production bundle
+- `make deploy` publishes the built site to GitHub Pages
 
-## Generating new data
+## Notes
 
-The `notebooks/` directory contains the original notebooks used to create the GeoJSON batches. Those notebooks are still the source of the current assets.
-
-## v2 direction
-
-The next version will keep the current GeoJSON assets, but present them in a more editorial layout:
-
-- Vite for the app shell
-- React for state and composition
-- Tailwind for the design system
-- MapLibre for the map layer
-- A dedicated overlay module for image cards anchored to the map
-
-The goal is a large, classy map where the imagery feels integrated into the cartography rather than floating above it.
+- The custom domain is tracked in the root `CNAME` file.
+- This repo no longer claims an MIT license in the README, because no `LICENSE` file is present here.

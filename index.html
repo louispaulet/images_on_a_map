@@ -1,78 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div id="mapid"></div>
-  <p id="category-text">Select category to display:</p>
-  <select id="dropdown">
-  <optgroup label="Man Batches">
-    <option value="europe_man_batch_0.geojson">Man Batch 0</option>
-    <option value="europe_man_batch_1.geojson">Man Batch 1</option>
-    <option value="europe_man_batch_2.geojson">Man Batch 2</option>
-    <option value="europe_man_batch_3.geojson">Man Batch 3</option>
-  </optgroup>
-  
-  <optgroup label="Woman Batches">
-    <option value="europe_woman_batch_0.geojson">Woman Batch 0</option>
-    <option value="europe_woman_batch_1.geojson">Woman Batch 1</option>
-    <option value="europe_woman_batch_2.geojson">Woman Batch 2</option>
-    <option value="europe_woman_batch_3.geojson">Woman Batch 3</option>
-  </optgroup>
-  
-  <optgroup label="Architecture Batches">
-    <option value="europe_architecture_batch_1.geojson">Architecture 1</option>
-    <option value="europe_architecture_batch_2.geojson">Architecture 2</option>
-    <option value="houses_batch_1_batch_0.geojson">Typical House 1</option>
-    <option value="houses_batch_1_batch_1.geojson">Typical House 2</option>
-  </optgroup>
-  
-  <optgroup label="Baroque Still Life">
-    <option value="eu_national_baroque_still_life_prompts_batch_0.geojson">Baroque Still Life Batch 0</option>
-    <option value="eu_national_baroque_still_life_prompts_batch_1.geojson">Baroque Still Life Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="Impressionist Garden">
-    <option value="eu_national_impressionist_garden_prompts_batch_0.geojson">Impressionist Garden Batch 0</option>
-    <option value="eu_national_impressionist_garden_prompts_batch_1.geojson">Impressionist Garden Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="National Leaders">
-    <option value="eu_national_leaders_prompts_batch_0.geojson">National Leaders Batch 0</option>
-    <option value="eu_national_leaders_prompts_batch_1.geojson">National Leaders Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="Mosaic">
-    <option value="eu_national_mosaic_prompts_batch_0.geojson">Mosaic Batch 0</option>
-    <option value="eu_national_mosaic_prompts_batch_1.geojson">Mosaic Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="Mountain">
-    <option value="eu_national_mountain_prompts_batch_0.geojson">Mountain Batch 0</option>
-    <option value="eu_national_mountain_prompts_batch_1.geojson">Mountain Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="Renaissance Castle">
-    <option value="eu_national_renaissance_castle_prompts_batch_0.geojson">Renaissance Castle Batch 0</option>
-    <option value="eu_national_renaissance_castle_prompts_batch_1.geojson">Renaissance Castle Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="Travel Poster">
-    <option value="eu_national_travel_poster_prompts_batch_0.geojson">Travel Poster Batch 0</option>
-    <option value="eu_national_travel_poster_prompts_batch_1.geojson">Travel Poster Batch 1</option>
-  </optgroup>
-  
-  <optgroup label="Vintage Poster">
-    <option value="eu_national_vintage_poster_prompts_batch_0.geojson">Vintage Poster Batch 0</option>
-    <option value="eu_national_vintage_poster_prompts_batch_1.geojson">Vintage Poster Batch 1</option>
-  </optgroup>
-</select>
-
-
-
-  <script src="main.js"></script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Images on a Map is a modern map-based gallery of representative images."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Images on a Map</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
+
