@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeFeatureCollection, projectAnchors } from './overlay.js';
+import { getAnchorPresentation, normalizeFeatureCollection, projectAnchors } from './overlay.js';
 import { collections } from '../data/catalog.js';
 
 describe('catalog', () => {
@@ -110,30 +110,14 @@ describe('projectAnchors', () => {
     });
   });
 
-  it('separates overlapping desktop anchors', () => {
-    const anchors = projectAnchors(
-      [
-        {
-          id: 'one',
-          name: 'One',
-          imageSrc: 'data:image/png;base64,abc123',
-          lng: 1,
-          lat: 1,
-        },
-        {
-          id: 'two',
-          name: 'Two',
-          imageSrc: 'data:image/png;base64,abc123',
-          lng: 1,
-          lat: 1,
-        },
-      ],
-      () => ({ x: 220, y: 240 }),
-      { width: 800, height: 600 },
-      undefined,
-      'desktop',
-    );
+  it('scales cards from full size at the center to tiny at the edge', () => {
+    const viewport = { width: 1200, height: 800 };
+    const center = getAnchorPresentation({ x: 600, y: 400 }, viewport, 'desktop');
+    const edge = getAnchorPresentation({ x: 40, y: 40 }, viewport, 'desktop');
 
-    expect(anchors[0].x === anchors[1].x && anchors[0].y === anchors[1].y).toBe(false);
+    expect(center.detailLevel).toBe('full');
+    expect(center.scale).toBe(1);
+    expect(edge.detailLevel).toBe('mini');
+    expect(edge.scale).toBe(0.05);
   });
 });

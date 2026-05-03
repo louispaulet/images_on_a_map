@@ -17,6 +17,7 @@ export default function MapScene({
   const mapRef = useRef(null);
   const [anchors, setAnchors] = useState([]);
   const [mapReady, setMapReady] = useState(false);
+  const [viewport, setViewport] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) {
@@ -93,6 +94,9 @@ export default function MapScene({
         return;
       }
 
+      setViewport((current) =>
+        current.width === viewport.width && current.height === viewport.height ? current : viewport,
+      );
       setAnchors(projectAnchors(features, (lngLat) => map.project(lngLat), viewport, chromeInsets, layoutMode));
     };
 
@@ -123,6 +127,8 @@ export default function MapScene({
         onSelectFeature={onSelectFeature}
         collectionTitle={collectionTitle}
         batchLabel={batchLabel}
+        chromeInsets={chromeInsets}
+        viewport={viewport}
         layoutMode={layoutMode}
       />
     </div>
