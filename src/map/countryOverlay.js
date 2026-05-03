@@ -50,7 +50,11 @@ export function normalizeWorldCountries(collection, sourceId = 'world-countries.
   return collection.features
     .map((feature, index) => {
       const properties = feature?.properties ?? {};
-      const iso2 = String(properties['ISO3166-1-Alpha-2'] ?? '').trim().toUpperCase();
+      const name = String(properties.name ?? '').trim();
+      const countryOverrides = {
+        France: 'FR',
+      };
+      const iso2 = String(countryOverrides[name] ?? properties['ISO3166-1-Alpha-2'] ?? '').trim().toUpperCase();
 
       if (iso2.length !== 2 || iso2 === '-99') {
         return null;
@@ -59,7 +63,7 @@ export function normalizeWorldCountries(collection, sourceId = 'world-countries.
       return {
         id: `${iso2}-${index}`,
         iso2,
-        name: properties.name ?? iso2,
+        name: name || iso2,
         geometry: feature.geometry,
         raw: feature,
       };
