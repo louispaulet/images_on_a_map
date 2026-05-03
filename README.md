@@ -49,7 +49,7 @@ Other useful targets:
 - `make lint` runs ESLint
 - `make test` runs the Vitest smoke tests
 - `make build` creates the production bundle
-- `make deploy` publishes the built site to GitHub Pages
+- `make deploy` publishes the built site through the GitHub Pages workflow
 
 ## Notes
 

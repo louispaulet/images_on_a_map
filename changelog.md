@@ -20,7 +20,7 @@
 - Added `agents.md` with the repo rules: always run `make lint` and `make test`, and always commit and push after each change.
 - Added a `Makefile` with `up`, `down`, `lint`, `test`, `build`, and `deploy`.
 - Added asset syncing so `geojson_data/` is mirrored into `public/geojson_data/` for dev and production builds.
-- Added a GitHub Pages deploy path that publishes the built site and preserves the custom domain.
+- Added a GitHub Pages workflow deploy path that publishes the built site and preserves the custom domain.
 
 ### Verification
 
